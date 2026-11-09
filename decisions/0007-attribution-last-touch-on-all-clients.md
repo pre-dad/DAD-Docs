@@ -15,8 +15,9 @@ is a product rule, and the PRD states it.
 
 **Attribution is last-touch-wins on every client.** The most recent code used before the
 first gift is the one that is kept, as PRD **R-4** says ("Attribution is last-touch: the
-most recent code used before the first gift wins"). A newly arriving touch replaces the
-stored one, field by field, on iOS and Android alike.
+most recent code used before the first gift wins"). A newly accepted referral token
+replaces the retained referral token on iOS and Android alike; a separately captured
+company token remains available for company binding.
 
 The server agrees: DAD-Main records the most recent accepted referral touch
 (`referral_touch_captured.v1`, where a later valid link or IRL scan replaces it before
@@ -31,12 +32,12 @@ last is out of conformance with R-4 and is fixed, not documented.
 
 - Canonical rule: **PRD R-4** (`docs/requirements/R1-PRD.md` in DAD-Main).
 - Server side: DAD-Main `docs/analytics.md`, `referral_touch_captured.v1`.
-- Enforced in: each app's `Attribution` source and its unit tests (`AttributionTest` on
-  Android, `AttributionTests` on iOS). Each must assert that a later touch replaces an
-  earlier one.
+- Enforced in: each app's `LinkAttribution` source and its wire-level tests
+  (`LinkAttributionTest` on Android, `LinkAttributionTests` on iOS). Each asserts that a
+  later referral replaces the retained token without discarding the company touch.
 
 ## Why it is written down here
 
-The rule is cross-repo: the apps merge touches locally, and the server counts the
-conversion. Naming the owner and the enforcement points keeps the three from drifting
-apart again.
+The rule is cross-repo: the apps retain server-issued touch tokens, and the server
+counts the conversion. Naming the owner and the enforcement points keeps the three
+from drifting apart again.

@@ -25,9 +25,10 @@ GitHub run or artifact, so it cannot publish to the Worker ledger.
 
 - **The Worker ledger is the single source of truth for ATM findings.** Its trust model
   (GitHub-run-bound receipts) is not changed to admit other identities.
-- **The AWS runner is held: built and tested, not deployed.** DAD-infra's `atm-infra.yml`
-  runs its tests and an offline synth on every PR and has no deploy jobs. Deployed on
-  its own it would write a second, disconnected findings store.
+- **The AWS runner is held: built and tested, not deployed.** DAD-infra's shared `synth`
+  job in `dad-main-infra.yml` runs its tests and an offline synth on every PR.
+  The ATM app has no deploy job. Deployed on its own it would write a second,
+  disconnected findings store.
 - **If AWS runs are needed later,** a GitHub Actions job starts the CodeBuild run, waits,
   collects its evidence as a GitHub artifact and publishes with its own token, so the
   ledger is unchanged. Only do this for a need GitHub-hosted runs cannot meet, such as
