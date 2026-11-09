@@ -20,6 +20,8 @@ against the code they describe.
 | Target | Procedure | Owner |
 |---|---|---|
 | First deploy of an AWS environment | `DAD-infra/docs/bootstrap.md` | DAD-infra |
+| Enable live SMS and Apple/Google sign-in | `DAD-Main/docs/operations.md`, "Phone and social sign-in" and "Web identity"; `DAD-infra/docs/bootstrap.md`, "Fill in the application secrets" | DAD-Main, DAD-infra |
+| Measure burst and multi-hour capacity on synthetic data | `DAD-Main/docs/operations.md`, "Load testing with representative data"; representative estate via `DAD-infra/docs/bootstrap.md` | DAD-Main, DAD-infra |
 | Application release to AWS | `DAD-Main/.github/workflows/deploy.yml`; gate and rollback behavior in [../architecture/deployment.md](../architecture/deployment.md) | DAD-Main |
 | Rollback of a failed application deploy | Automatic: the ECS circuit breaker restores the previous image ([../architecture/deployment.md](../architecture/deployment.md)). Rolling back a deploy that succeeded has no written procedure | DAD-Main |
 | Website release and manual prod rollback | `DAD-website/deploy/README.md`, "Manual rollback (prod)" | DAD-website |
@@ -32,3 +34,18 @@ No single disaster-recovery plan spans the repos: there is no documented
 recovery-time or recovery-point objective, and no documented procedure for losing the
 Lightsail website boxes beyond the per-box install in `DAD-website/deploy/README.md`.
 Add one here as an ADR when the objectives are set.
+
+## Sign-in configuration ownership
+
+DAD-Main owns provider verification and OAuth callbacks. DAD-infra owns the ECS secret
+injection: API SMS/OIDC settings and web OAuth exchange credentials are held in
+separate JSON secrets and delivered only to their consuming process. Operators fill
+values through the bootstrap procedure; changing a value requires replacement tasks
+to take effect. Empty settings keep the optional methods unavailable. Provider
+acceptance uses synthetic accounts and signed native builds; local tests do not prove
+real delivery or sign-in.
+
+Capacity acceptance likewise belongs to a representative, disposable deployment.
+DAD-Main owns the seeded workloads and latency budgets; DAD-infra owns the topology
+and scaling configuration. Preserve application/image identity and observed resource
+sizes with results so a measured capacity has an identifiable deployment behind it.
