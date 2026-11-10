@@ -1,0 +1,187 @@
+{
+  "version": 1,
+  "skills": [
+    {
+      "name": "dad-debug",
+      "implicit": true
+    },
+    {
+      "name": "dad-review",
+      "implicit": true
+    },
+    {
+      "name": "dad-design-review",
+      "implicit": false
+    },
+    {
+      "name": "dad-security-audit",
+      "implicit": false
+    }
+  ],
+  "upstream": [
+    {
+      "repository": "https://github.com/mattpocock/skills",
+      "revision": "4ae2317ddb22b046e26455e4f9c9b3aaaf62212d",
+      "license": "MIT",
+      "skills": [
+        "dad-debug"
+      ],
+      "adaptation": "Locally authored adaptation of workflow ideas; upstream instructions are not installed wholesale.",
+      "files": [
+        {
+          "source": "LICENSE",
+          "path": "agent-skills/licenses/mattpocock-LICENSE",
+          "sha256": "0e7ac423bf2c6e223b7c5b156f8cf72da49d748e56a1641402c31f22ad07dbb5"
+        }
+      ]
+    },
+    {
+      "repository": "https://github.com/addyosmani/agent-skills",
+      "revision": "301b02b12bff98e4688e6984af6556802322bbde",
+      "license": "MIT",
+      "skills": [
+        "dad-review"
+      ],
+      "adaptation": "Locally authored adaptation of workflow ideas; upstream instructions are not installed wholesale.",
+      "files": [
+        {
+          "source": "LICENSE",
+          "path": "agent-skills/licenses/addyosmani-LICENSE",
+          "sha256": "6f202f8bd568cd730dbb2b0d1f8e243bc74c2fa1f64dbce9b2c7ea08bd5c9fd7"
+        }
+      ]
+    },
+    {
+      "repository": "https://github.com/google/elephant-goldfish-model",
+      "revision": "bdcfe8cdaee99699c4b2cb7ad4e3b2c1a6b56a31",
+      "license": "Apache-2.0",
+      "skills": [
+        "dad-design-review"
+      ],
+      "adaptation": "Locally authored adaptation of workflow ideas; upstream instructions are not installed wholesale.",
+      "files": [
+        {
+          "source": "LICENSE",
+          "path": "agent-skills/licenses/google-LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        }
+      ]
+    },
+    {
+      "repository": "https://github.com/cloudflare/security-audit-skill",
+      "revision": "c1c8a8c1471069fb0e188eeaff69b8e8db6564a8",
+      "license": "MIT",
+      "skills": [
+        "dad-security-audit"
+      ],
+      "adaptation": "Unmodified complete skill payload; SKILL.md stored as workflow.md to prevent nested discovery. DAD wrapper adds repository context and invocation boundaries.",
+      "files": [
+        {
+          "source": "skills/security-audit/AI-AND-LLM.md",
+          "path": "agent-skills/dad-security-audit/references/cloudflare-security-audit/AI-AND-LLM.md",
+          "sha256": "7335a95c43554eadefcf03ece639291bb0e038c398a179299e3887ffe06bd2ef"
+        },
+        {
+          "source": "skills/security-audit/ATTACK-CLASSES.md",
+          "path": "agent-skills/dad-security-audit/references/cloudflare-security-audit/ATTACK-CLASSES.md",
+          "sha256": "3ee4f00c6e8c9dcf6dd02dd5ac2a4ceb322e2085f3e9fbe79cf0c6330bc7ef83"
+        },
+        {
+          "source": "skills/security-audit/CLIENT-SIDE.md",
+          "path": "agent-skills/dad-security-audit/references/cloudflare-security-audit/CLIENT-SIDE.md",
+          "sha256": "613f6b98f86083e045525c5b60154ffdab122bac35f1e05eb17488e6e453370c"
+        },
+        {
+          "source": "skills/security-audit/CLOUD-AND-DEPLOYMENT.md",
+          "path": "agent-skills/dad-security-audit/references/cloudflare-security-audit/CLOUD-AND-DEPLOYMENT.md",
+          "sha256": "3c80f3088be22345e07b057c056d6ed99fe2b0304f794398964f7ccd5a496ca3"
+        },
+        {
+          "source": "skills/security-audit/DATA-ISOLATION-AND-LIFECYCLE.md",
+          "path": "agent-skills/dad-security-audit/references/cloudflare-security-audit/DATA-ISOLATION-AND-LIFECYCLE.md",
+          "sha256": "307dcb3e24d292715c4a041190e7bb135646a37eb6187619ae01d000a634a4ad"
+        },
+        {
+          "source": "skills/security-audit/DESKTOP-MOBILE-AND-LOCAL-IPC.md",
+          "path": "agent-skills/dad-security-audit/references/cloudflare-security-audit/DESKTOP-MOBILE-AND-LOCAL-IPC.md",
+          "sha256": "58eae8ee0ca6a46611c501ec5a3ab47fdff88dd7db0d8d74789bbf8bb19d8cb2"
+        },
+        {
+          "source": "skills/security-audit/HUNTING.md",
+          "path": "agent-skills/dad-security-audit/references/cloudflare-security-audit/HUNTING.md",
+          "sha256": "71c121decea1322c47c718f6e110f1a892980bb4266bd7ac55ef043a213ade09"
+        },
+        {
+          "source": "skills/security-audit/MEMORY-SAFETY-AND-BINARY.md",
+          "path": "agent-skills/dad-security-audit/references/cloudflare-security-audit/MEMORY-SAFETY-AND-BINARY.md",
+          "sha256": "7c8b0dccfb35315cca2455509674d49632b2fe37e1f3aac16c1a496a7e9924a7"
+        },
+        {
+          "source": "skills/security-audit/PROTOCOLS-RPC-AND-MESSAGING.md",
+          "path": "agent-skills/dad-security-audit/references/cloudflare-security-audit/PROTOCOLS-RPC-AND-MESSAGING.md",
+          "sha256": "8b73816fa5b3697c9c40977f0c836b40f01d6e81929ff2720fe83ce089e9a619"
+        },
+        {
+          "source": "skills/security-audit/RECONNAISSANCE.md",
+          "path": "agent-skills/dad-security-audit/references/cloudflare-security-audit/RECONNAISSANCE.md",
+          "sha256": "02ca887aca84de8ae137f1891bd2f0a54f28d3fa6da92a27f54734382b3381a2"
+        },
+        {
+          "source": "skills/security-audit/RESOURCE-EXHAUSTION-AND-AVAILABILITY.md",
+          "path": "agent-skills/dad-security-audit/references/cloudflare-security-audit/RESOURCE-EXHAUSTION-AND-AVAILABILITY.md",
+          "sha256": "4326fab5c92a0b4c420a70196254040105cd794026562130b59bf1a6db3e4baa"
+        },
+        {
+          "source": "skills/security-audit/SKILL.md",
+          "path": "agent-skills/dad-security-audit/references/cloudflare-security-audit/workflow.md",
+          "sha256": "5e3e96a1e438d8f35fef0a1e38f02d4f00e2bdf910401b7dfe00e6779c6dac85"
+        },
+        {
+          "source": "skills/security-audit/SUPPLY-CHAIN-AND-RELEASE.md",
+          "path": "agent-skills/dad-security-audit/references/cloudflare-security-audit/SUPPLY-CHAIN-AND-RELEASE.md",
+          "sha256": "f372e919940e335468ba1ae09f99026c3986a345f7fe26f8068f132e199f52a5"
+        },
+        {
+          "source": "skills/security-audit/VALIDATION-AND-REPORTING.md",
+          "path": "agent-skills/dad-security-audit/references/cloudflare-security-audit/VALIDATION-AND-REPORTING.md",
+          "sha256": "b892470cb89bb31f33403e050d4bdfbe2cdaef940ade1496fa65e32b2e129449"
+        },
+        {
+          "source": "skills/security-audit/WEB-PROTOCOL-AND-AUTH.md",
+          "path": "agent-skills/dad-security-audit/references/cloudflare-security-audit/WEB-PROTOCOL-AND-AUTH.md",
+          "sha256": "4f3066dffa23c5635859187be9b96c32f2aff29a688186b91ff0c63e47d62b5c"
+        },
+        {
+          "source": "skills/security-audit/report-schema.json",
+          "path": "agent-skills/dad-security-audit/references/cloudflare-security-audit/report-schema.json",
+          "sha256": "6575c9de4a62255699ea052ebf9a49ebfb373a32891bcd89af6f55cc84b35519"
+        },
+        {
+          "source": "skills/security-audit/validate-coverage-ledger.cjs",
+          "path": "agent-skills/dad-security-audit/references/cloudflare-security-audit/validate-coverage-ledger.cjs",
+          "sha256": "2eb280bd2e33c002916f86db9b29f9edfedb6454e5db973c766290465b868ac8"
+        },
+        {
+          "source": "skills/security-audit/validate-coverage-ledger.test.cjs",
+          "path": "agent-skills/dad-security-audit/references/cloudflare-security-audit/validate-coverage-ledger.test.cjs",
+          "sha256": "cfb9df26b03469a4279a70e7664a2a5434dd6f8c2c204e91f9b0aeb9dd71e648"
+        },
+        {
+          "source": "skills/security-audit/validate-findings.cjs",
+          "path": "agent-skills/dad-security-audit/references/cloudflare-security-audit/validate-findings.cjs",
+          "sha256": "e85f232e36bfac0f866f244da50376692d6b45c690beadcb00608b0e6c8b5283"
+        },
+        {
+          "source": "skills/security-audit/validate-findings.test.cjs",
+          "path": "agent-skills/dad-security-audit/references/cloudflare-security-audit/validate-findings.test.cjs",
+          "sha256": "b92001117a92c4161d43777a0ba2fa182a8a4d97f2304cc8c0cee5331497b73b"
+        },
+        {
+          "source": "LICENSE",
+          "path": "agent-skills/dad-security-audit/references/cloudflare-security-audit/LICENSE",
+          "sha256": "e598e694aa506650c7192d5ea3be0e50aca0d356ea00551c53429f0b01eb6391"
+        }
+      ]
+    }
+  ]
+}

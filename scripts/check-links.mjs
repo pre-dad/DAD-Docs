@@ -13,7 +13,7 @@
 //   - External URLs (http/https/mailto) are not fetched; external link liveness
 //     is out of scope by design.
 
-import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, lstatSync, existsSync } from "node:fs";
 import { join, dirname, resolve, extname } from "node:path";
 
 const ROOT = resolve(process.argv[2] ?? ".");
@@ -23,7 +23,9 @@ function walk(dir) {
   for (const name of readdirSync(dir)) {
     if (name === ".git" || name === "node_modules") continue;
     const p = join(dir, name);
-    const s = statSync(p);
+    const s = lstatSync(p);
+    // Locally installed skill links may lead outside this repo or back into it.
+    if (s.isSymbolicLink()) continue;
     if (s.isDirectory()) out.push(...walk(p));
     else if (extname(p) === ".md") out.push(p);
   }
