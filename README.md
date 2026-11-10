@@ -28,6 +28,8 @@ New to the codebase? Read in this order:
    restore, key-rotation, bootstrap and rollback procedures live, and who owns each.
 6. **[glossary.md](glossary.md)** — terms you will hit immediately (ATM, mobile-foundation,
    impactgraph, …).
+7. **[conventions/agent-workflow.md](conventions/agent-workflow.md)** — shared debugging,
+   review, design-review and audit skills, local setup, and discovery checks.
 
 ## The repositories
 
