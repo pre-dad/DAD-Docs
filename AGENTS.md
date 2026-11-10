@@ -8,16 +8,27 @@ with these; this file only adds what they do not say.
 - **[conventions/repos-and-branches.md](conventions/repos-and-branches.md)** — branching,
   branch protection, and "Committed docs vs working docs".
 - **[decisions/README.md](decisions/README.md)** — the ADR index and what qualifies.
+- **[conventions/agent-workflow.md](conventions/agent-workflow.md)** — shared skill routing,
+  installation, invocation boundaries, and independent-review requirements. Use
+  `dad-debug` for substantive defects and `dad-review` for completed behavior changes;
+  design review and full security audits are explicitly invoked workflows.
 
 ## The gate (CI job `docs`, the required check on `main`)
 
 ```sh
 node scripts/check-links.mjs .
+node scripts/check-agent-skills.mjs
+node --test scripts/setup-agent-skills.test.mjs
+node --test agent-skills/dad-security-audit/references/cloudflare-security-audit/validate-findings.test.cjs agent-skills/dad-security-audit/references/cloudflare-security-audit/validate-coverage-ledger.test.cjs
 node scripts/check-version-anchor.mjs architecture/mobile-contract.md   # advisory, never fails
 ```
 
-The link check fails on a relative link to a path or `#heading` that does not exist. It does not fetch
-external URLs, and it cannot verify prose against code.
+The link check fails on a relative link to a path or `#heading` that does not exist.
+Skill checks verify structure, retained upstream integrity, and local setup behavior;
+they do not prove model routing or review quality. Neither check fetches external URLs
+or verifies prose against code.
+For optional local Codex discovery, use `node scripts/check-agent-discovery.mjs --cwd PATH`
+after installing into that repository. It starts no model turn and is not a CI dependency.
 
 ## Branch and push discipline
 
@@ -25,11 +36,14 @@ external URLs, and it cannot verify prose against code.
   never squash or rebase. Never push to `main` directly.
 - Run `git commit` and `git push` as two separate commands.
 
-## Writing rules (this repo has prose, not code)
+## Writing and shared-tooling rules
 
 - Explain **why** (a constraint, a trade-off, a non-obvious behavior), not what the linked
   source already says. No commented-out text (git keeps history); a `TODO` names a tracked
   issue.
+- Shared skill tooling is dependency-free Node.js. Keep setup local and explicit,
+  preserve existing skills and tracked repository files, and test filesystem changes
+  in disposable Git repositories. Do not run an audit as part of setup validation.
 
 ## Gotchas not written in the docs
 

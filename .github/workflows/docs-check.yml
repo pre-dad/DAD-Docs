@@ -20,6 +20,11 @@ jobs:
       # Gate: internal links/references must resolve. Fails the build on broken links.
       - name: Link + reference check
         run: node scripts/check-links.mjs .
+      - name: Skill integrity and setup checks
+        run: |
+          node scripts/check-agent-skills.mjs
+          node --test scripts/setup-agent-skills.test.mjs
+          node --test agent-skills/dad-security-audit/references/cloudflare-security-audit/validate-findings.test.cjs agent-skills/dad-security-audit/references/cloudflare-security-audit/validate-coverage-ledger.test.cjs
       # Advisory: warn (never fail) if the contract doc lags the latest
       # mobile-foundation tag. Reads public tags with no token.
       - name: Version anchor (advisory)
