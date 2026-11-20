@@ -30,7 +30,7 @@ last is out of conformance with R-4 and is fixed, not documented.
 
 ## Who owns this premise
 
-- Canonical rule: **PRD R-4** (`docs/requirements/R1-PRD.md` in DAD-Main).
+- Canonical rule: **PRD R-4**, quoted above. The R1 PRD is held outside this repo and DAD-Main does not track it.
 - Server side: DAD-Main `docs/analytics.md`, `referral_touch_captured.v1`.
 - Enforced in: each app's `LinkAttribution` source and its wire-level tests
   (`LinkAttributionTest` on Android, `LinkAttributionTests` on iOS). Each asserts that a

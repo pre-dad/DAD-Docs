@@ -77,7 +77,7 @@ DAD-Main/
   contracts/         # mobile-foundation bundle source + version.json
   deploy/nginx/      # edge image: ingress, TLS and Cloudflare origin config
   scripts/           # bundle tooling, ECS rollout and one-off task scripts
-  infra/             # pointer to DAD-infra; no code
+  design/            # design tokens
   docs/              # architecture, operations, security, product contract
 ```
 

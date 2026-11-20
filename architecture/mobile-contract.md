@@ -26,6 +26,8 @@ operation allow-list and shipped as a tagged release of DAD-Main:
 Each app commits a `foundation.lock.json` that pins the exact snapshot. As of this
 writing the current release is `2.13.0`, and the apps vendor it as this triple:
 
+<!-- contract-version: 2.13.0 -->
+
 ```json
 {
   "version": "2.13.0",
@@ -55,16 +57,13 @@ negotiate the server response format. Strict generated response decoders can rej
 new properties even when a schema change is additive. Verify runtime compatibility
 separately before deploying a backend revision.
 
-Release 2.13.0 is additive over the prior tag — it adds explicit profile
-time-zone corrections, employee aggregate verification flags, and bounded report-export
-refusals. An app that is still pinned to an earlier release keeps building and does not see
-the new operations until it re-vendors.
-
-Foundation 2.13.0 requires a coordinated R1 native/backend rollout: older iOS 2.12.0
-snapshot clients reject the added employee verification and saved time-zone
-correction properties. Both current native sources adopt 2.13.0. If older installed
-builds must coexist, the API owner must introduce and verify an explicit compatible
-response boundary before rollout; changing a snapshot tag alone is insufficient.
+An app pinned to an earlier release keeps building and does not see new operations
+until it re-vendors. Installed builds are a separate matter: iOS builds from the
+2.12.0 snapshot reject the response properties 2.13.0 added (employee verification
+flags and saved time-zone corrections), so the native and backend releases ship
+together. If older installed builds must coexist, the API owner must introduce and
+verify an explicit compatible response boundary first; changing a snapshot tag alone is
+insufficient.
 
 ## Re-vendoring an app (the per-phase chore)
 

@@ -13,6 +13,7 @@ against the code they describe.
 | Rotate an encryption key, or respond to a suspected compromise | `DAD-Main/docs/operations.md`, "Encryption keys" | DAD-Main |
 | Rotate or supply a database password | `DAD-Main/docs/operations.md`, "Database roles"; `DAD-infra/docs/bootstrap.md`, "Database passwords are ECS secrets" | DAD-Main, DAD-infra |
 | Payment webhook or Stripe reconciliation problems | `DAD-Main/docs/operations.md`, "Stripe" | DAD-Main |
+| Lose or corrupt the production database, or lose the region | `DAD-infra/docs/disaster-recovery.md` | DAD-infra |
 | Security controls and reporting a vulnerability | `DAD-Main/docs/security.md`, `DAD-Main/SECURITY.md` | DAD-Main |
 
 ## Deploying and rolling back
@@ -20,7 +21,7 @@ against the code they describe.
 | Target | Procedure | Owner |
 |---|---|---|
 | First deploy of an AWS environment | `DAD-infra/docs/bootstrap.md` | DAD-infra |
-| Enable live SMS and Apple/Google sign-in | `DAD-Main/docs/operations.md`, "Phone and social sign-in" and "Web identity"; `DAD-infra/docs/bootstrap.md`, "Fill in the application secrets" | DAD-Main, DAD-infra |
+| Enable live SMS and Apple/Google sign-in | `DAD-Main/docs/operations.md`, "Phone and social sign-in" and "Web signup and identity providers"; `DAD-infra/docs/bootstrap.md`, "Fill in the application secrets" | DAD-Main, DAD-infra |
 | Measure burst and multi-hour capacity on synthetic data | `DAD-Main/docs/operations.md`, "Load testing with representative data"; representative estate via `DAD-infra/docs/bootstrap.md` | DAD-Main, DAD-infra |
 | Application release to AWS | `DAD-Main/.github/workflows/deploy.yml`; gate and rollback behavior in [../architecture/deployment.md](../architecture/deployment.md) | DAD-Main |
 | Rollback of a failed application deploy | Automatic: the ECS circuit breaker restores the previous image ([../architecture/deployment.md](../architecture/deployment.md)). Rolling back a deploy that succeeded has no written procedure | DAD-Main |
@@ -30,10 +31,10 @@ against the code they describe.
 
 ## Gaps
 
-No single disaster-recovery plan spans the repos: there is no documented
-recovery-time or recovery-point objective, and no documented procedure for losing the
-Lightsail website boxes beyond the per-box install in `DAD-website/deploy/README.md`.
-Add one here as an ADR when the objectives are set.
+`DAD-infra/docs/disaster-recovery.md` states recovery-point and recovery-time
+estimates for the production database; they have not been rehearsed. No disaster-recovery
+plan spans the repos, and there is no documented procedure for losing the Lightsail
+website boxes beyond the per-box install in `DAD-website/deploy/README.md`.
 
 ## Sign-in configuration ownership
 
