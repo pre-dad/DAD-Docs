@@ -45,18 +45,26 @@ the apps physically refuse to silently drift.
 ## Semver = the compatibility promise
 
 - **MINOR bump** (e.g. 2.2 → 2.3): purely additive. An old app still builds; it just
-  does not see the new operations until it re-vendors. **Safe to defer per app.**
+  does not see the new operations until it re-vendors. Runtime compatibility must also be checked against supported installed clients.
 - **MAJOR bump** (e.g. 1.x → 2.0): breaking. Both apps must re-vendor and fix fallout
   before they can adopt — but they still do not *break* in the meantime, because they
   stay pinned to the old snapshot until someone re-vendors.
 
-Nothing in an app breaks when DAD-Main ships a new contract. The apps only change
-when a human re-vendors. The wall is a feature, not friction.
+The snapshot protects client builds from moving source contracts; it does not
+negotiate the server response format. Strict generated response decoders can reject
+new properties even when a schema change is additive. Verify runtime compatibility
+separately before deploying a backend revision.
 
 Release 2.13.0 is additive over the prior tag — it adds explicit profile
 time-zone corrections, employee aggregate verification flags, and bounded report-export
 refusals. An app that is still pinned to an earlier release keeps building and does not see
 the new operations until it re-vendors.
+
+Foundation 2.13.0 requires a coordinated R1 native/backend rollout: older iOS 2.12.0
+snapshot clients reject the added employee verification and saved time-zone
+correction properties. Both current native sources adopt 2.13.0. If older installed
+builds must coexist, the API owner must introduce and verify an explicit compatible
+response boundary before rollout; changing a snapshot tag alone is insufficient.
 
 ## Re-vendoring an app (the per-phase chore)
 
