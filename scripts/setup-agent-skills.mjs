@@ -5,11 +5,13 @@ import {
   realpathSync, symlinkSync, unlinkSync, writeFileSync,
 } from "node:fs";
 import { createHash } from "node:crypto";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const sourceRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+// The pack ships a fixed set of skills; a different count means the pack shape changed.
+export const SKILL_COUNT = 4;
 const present = (path) => {
   try { return lstatSync(path); } catch (error) {
     if (error.code === "ENOENT") return null;
@@ -23,7 +25,9 @@ const git = (repo, ...args) => execFileSync("git", ["-C", repo, ...args], {
 export function checkPack(root = sourceRoot) {
   const pack = join(root, "agent-skills");
   const manifest = JSON.parse(readFileSync(join(pack, "upstream.json"), "utf8"));
-  if (manifest.version !== 1 || manifest.skills.length !== 4) throw new Error("Unsupported skill manifest");
+  if (manifest.version !== 1 || manifest.skills.length !== SKILL_COUNT) {
+    throw new Error(`Unsupported skill manifest: expected version 1 with ${SKILL_COUNT} skills, found version ${manifest.version} with ${manifest.skills.length}`);
+  }
   const names = new Set();
   for (const { name, implicit } of manifest.skills) {
     if (!/^dad-[a-z]+(?:-[a-z]+)*$/.test(name) || names.has(name) || typeof implicit !== "boolean") {
@@ -88,7 +92,13 @@ export function planSetup(repos, { root = sourceRoot, mode = "install" } = {}) {
     const repo = realpathSync(resolve(input));
     if (seen.has(repo)) continue;
     seen.add(repo);
-    if (realpathSync(git(repo, "rev-parse", "--show-toplevel")) !== repo) {
+    let toplevel;
+    try {
+      toplevel = realpathSync(git(repo, "rev-parse", "--show-toplevel"));
+    } catch {
+      throw new Error(`Not a Git repository: ${input}`);
+    }
+    if (toplevel !== repo) {
       throw new Error(`Select a repository root, not a subdirectory: ${input}`);
     }
     for (const path of [join(repo, ".agents"), join(repo, ".agents", "skills")]) {
@@ -108,7 +118,7 @@ export function planSetup(repos, { root = sourceRoot, mode = "install" } = {}) {
         throw new Error(`Refusing existing skill or conflicting link: ${path}`);
       }
       if (mode === "check" && !stat) throw new Error(`Skill is not installed: ${path}`);
-      return { path, target, exists: Boolean(stat) };
+      return { name, path, target, exists: Boolean(stat) };
     });
     const exclude = resolve(repo, git(repo, "rev-parse", "--git-path", "info/exclude"));
     const excludeStat = present(exclude);
@@ -117,9 +127,9 @@ export function planSetup(repos, { root = sourceRoot, mode = "install" } = {}) {
     }
     if (mode === "check") {
       for (const link of links) {
-        if (execFileSync("git", ["-C", repo, "check-ignore", "--", relative(repo, link.path)], {
-          encoding: "utf8", stdio: ["ignore", "pipe", "pipe"],
-        }).trim() === "") throw new Error(`Installed skill is not ignored: ${link.path}`);
+        const ignored = spawnSync("git", ["-C", repo, "check-ignore", "-q", "--", relative(repo, link.path)]);
+        if (ignored.status === 1) throw new Error(`Installed skill is not ignored: ${link.path}`);
+        if (ignored.status !== 0) throw new Error(`git check-ignore failed: ${ignored.stderr ?? ignored.error?.message}`);
       }
     }
     plans.push({ repo, links, exclude });
@@ -139,7 +149,7 @@ export function applySetup(plans, { mode = "install", dryRun = false } = {}) {
       continue;
     }
     const old = existsSync(plan.exclude) ? readFileSync(plan.exclude, "utf8") : "";
-    const rules = plan.links.map((link) => `/.agents/skills/${link.path.split(/[\\/]/).at(-1)}`);
+    const rules = plan.links.map((link) => `/.agents/skills/${link.name}`);
     const missing = rules.filter((rule) => !old.split(/\r?\n/).includes(rule));
     if (missing.length) {
       mkdirSync(dirname(plan.exclude), { recursive: true });
@@ -160,7 +170,7 @@ export function main(args) {
     else if (arg === "--dry-run") dryRun = true;
     else if ((arg === "--check" || arg === "--remove") && mode === "install") mode = arg.slice(2);
     else if (arg === "--help") {
-      console.log("Usage: node scripts/setup-agent-skills.mjs --repo PATH [--repo PATH ...] [--dry-run | --check | --remove]");
+      console.log("Usage: node scripts/setup-agent-skills.mjs --repo PATH [--repo PATH ...] [--check | --remove] [--dry-run]");
       return;
     } else throw new Error(`Unknown, missing, or conflicting argument: ${arg}`);
   }

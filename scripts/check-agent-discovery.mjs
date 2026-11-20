@@ -3,7 +3,7 @@
 import { spawn } from "node:child_process";
 import { mkdtempSync, realpathSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { join, resolve, sep } from "node:path";
 import { createInterface } from "node:readline";
 import { checkPack, sourceRoot } from "./setup-agent-skills.mjs";
 
@@ -49,6 +49,7 @@ child.stdin.on("error", (error) => rejectPending(error));
 lines.on("line", (line) => {
   let message;
   try { message = JSON.parse(line); } catch { return; }
+  if (message.method) return;
   const entry = pending.get(message.id);
   if (!entry) return;
   pending.delete(message.id);
@@ -85,10 +86,10 @@ try {
       }
     }
     const extra = entry.skills.filter((skill) => skill.name === "security-audit");
-    if (extra.some((skill) => realpathSync(skill.path).startsWith(sourceRoot))) {
+    if (extra.some((skill) => realpathSync(skill.path).startsWith(sourceRoot + sep))) {
       throw new Error(`Nested upstream skill was discovered at ${cwd}`);
     }
-    console.log(`Codex discovered all four DAD skills at ${cwd}`);
+    console.log(`Codex discovered all ${manifest.skills.length} DAD skills at ${cwd}`);
     if (entry.errors.length) console.log(`${entry.errors.length} other skill-loading error(s); inspect your host separately.`);
   }
   console.log("Discovery only: no model turn, design review, or security audit was started.");
