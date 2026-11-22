@@ -7,7 +7,7 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
-import { applySetup, checkPack, planSetup, sourceRoot } from "./setup-agent-skills.mjs";
+import { applySetup, checkPack, main, planSetup, sourceRoot } from "./setup-agent-skills.mjs";
 
 const git = (repo, ...args) => execFileSync("git", ["-C", repo, ...args], { encoding: "utf8" }).trim();
 function fixture(t) {
@@ -55,7 +55,7 @@ test("dry run and failed multi-repo preflight leave every target unchanged", (t)
   install([repo], { dryRun: true });
   assert(!existsSync(join(repo, ".agents")));
   assert.equal(readFileSync(exclude, "utf8"), before);
-  assert.throws(() => install([repo, root]), /Command failed/);
+  assert.throws(() => install([repo, root]), /Not a Git repository/);
   assert(!existsSync(join(repo, ".agents")));
   assert.equal(readFileSync(exclude, "utf8"), before);
 });
@@ -122,15 +122,27 @@ test("installs into Git worktrees with a .git file", (t) => {
   assert(!existsSync(join(repo, ".agents")));
 });
 
-test("link checker does not recurse into installed links and still rejects broken document links", (t) => {
+test("check reports an installed skill that is not ignored", (t) => {
   const { repo } = fixture(t);
-  writeFileSync(join(repo, "README.md"), "[Guide](guide.md)\n");
-  writeFileSync(join(repo, "guide.md"), "# Guide\n");
-  symlinkSync(repo, join(repo, "recursive-local-link"));
-  const checker = join(sourceRoot, "scripts", "check-links.mjs");
-  execFileSync(process.execPath, [checker, repo], { timeout: 5000 });
-  writeFileSync(join(repo, "README.md"), "[Missing](missing.md)\n");
-  assert.throws(() => execFileSync(process.execPath, [checker, repo], {
-    timeout: 5000, stdio: "pipe",
-  }), (error) => error.status === 1 && error.stderr.toString().includes("missing.md"));
+  install([repo]);
+  writeFileSync(join(repo, ".git", "info", "exclude"), "");
+  assert.throws(() => install([repo], { mode: "check" }), /not ignored/);
+});
+
+test("command line rejects missing, conflicting, and unknown arguments", (t) => {
+  const { repo } = fixture(t);
+  assert.throws(() => main([]), /At least one explicit --repo/);
+  assert.throws(() => main(["--repo"]), /missing, or conflicting/);
+  assert.throws(() => main(["--repo", repo, "--check", "--remove"]), /missing, or conflicting/);
+  assert.throws(() => main(["--bogus"]), /missing, or conflicting/);
+});
+
+test("command line applies a dry run and check after install", (t) => {
+  const { repo } = fixture(t);
+  main(["--repo", repo, "--dry-run"]);
+  assert(!existsSync(join(repo, ".agents")));
+  main(["--repo", repo]);
+  main(["--repo", repo, "--check"]);
+  main(["--repo", repo, "--remove"]);
+  assert(!existsSync(skillPath(repo)));
 });

@@ -24,7 +24,9 @@ The semver of a `mobile-foundation` tag means exactly this, and nothing else:
   because they stay pinned to the old snapshot until a human re-vendors.
 
 The premise the apps rely on: **"a tag that is a minor/patch bump over what I pinned
-will never break me; only a major bump can."** The drift check encodes this — it warns
+will never break my *build*; only a major bump can."** This is a build-time promise: strict generated decoders can still reject additive response
+properties at runtime, so see the runtime-compatibility paragraphs in
+[../architecture/mobile-contract.md](../architecture/mobile-contract.md). The drift check encodes this — it warns
 on a minor/patch gap and fails on a major gap.
 
 ## Obligations this places on the tagger

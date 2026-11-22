@@ -32,15 +32,21 @@ function latestTag() {
     versions.sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]);
     return versions.at(-1);
   } catch (e) {
-    console.log(`::notice::version-anchor: could not read remote tags (${e.message}); skipping.`);
+    console.log(`::notice::version-anchor: could not read remote tags (${e.message.split("\n")[0]}); skipping.`);
     return null;
   }
 }
 
 function docVersion() {
-  const src = readFileSync(DOC, "utf8");
-  // The doc cites the current pin in a JSON block: "version": "X.Y.Z".
-  const m = src.match(/"version"\s*:\s*"(\d+)\.(\d+)\.(\d+)"/);
+  let src;
+  try {
+    src = readFileSync(DOC, "utf8");
+  } catch (e) {
+    console.log(`::notice::version-anchor: could not read ${DOC} (${e.code ?? e.message}); skipping.`);
+    return null;
+  }
+  // The doc states the current pin in a marker comment: <!-- contract-version: X.Y.Z -->.
+  const m = src.match(/<!--\s*contract-version:\s*(\d+)\.(\d+)\.(\d+)\s*-->/);
   return m ? [Number(m[1]), Number(m[2]), Number(m[3])] : null;
 }
 
@@ -49,7 +55,7 @@ const doc = docVersion();
 
 if (!tag) process.exit(0); // unreachable remote -> advisory no-op
 if (!doc) {
-  console.log("::notice::version-anchor: no version string found in the doc; skipping.");
+  console.log("::notice::version-anchor: no contract-version marker found in the doc; skipping.");
   process.exit(0);
 }
 
@@ -59,7 +65,7 @@ const docS = doc.join(".");
 
 if (cmp > 0) {
   console.log(
-    `::warning file=${DOC}::mobile-contract.md cites v${docS} but the latest mobile-foundation tag is v${tagS}. ` +
+    `::warning file=${DOC}::${DOC} cites v${docS} but the latest mobile-foundation tag is v${tagS}. ` +
       `Review whether the contract doc needs a pass (this is advisory, not a failure).`
   );
 } else {

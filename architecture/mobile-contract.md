@@ -24,15 +24,17 @@ operation allow-list and shipped as a tagged release of DAD-Main:
 ## How the apps pin it
 
 Each app commits a `foundation.lock.json` that pins the exact snapshot. As of this
-writing the current release is `2.11.0`, and the apps vendor it as this triple:
+writing the current release is `2.13.0`, and the apps vendor it as this triple:
+
+<!-- contract-version: 2.13.0 -->
 
 ```json
 {
-  "version": "2.11.0",
+  "version": "2.13.0",
   "source_repository": "pre-dad/DAD-Main",
-  "source_revision": "2047d6a4f2d3cc8297e6c102fc8f7a30e45143ee",
-  "release_tag": "mobile-foundation-v2.11.0",
-  "manifest_sha256": "cffb02430a6f366c5e718af54d6ef1e1e64c488fcfb1dab5063c26e84ca55730"
+  "source_revision": "8d1bd0d46f996e6b8beab26f613f154ae105a036",
+  "release_tag": "mobile-foundation-v2.13.0",
+  "manifest_sha256": "23e3e679c5c60255e900c170c7d5d3285867fea0cbcc02bb033fbf0bbd0587f4"
 }
 ```
 
@@ -45,17 +47,23 @@ the apps physically refuse to silently drift.
 ## Semver = the compatibility promise
 
 - **MINOR bump** (e.g. 2.2 → 2.3): purely additive. An old app still builds; it just
-  does not see the new operations until it re-vendors. **Safe to defer per app.**
+  does not see the new operations until it re-vendors. Runtime compatibility must also be checked against supported installed clients.
 - **MAJOR bump** (e.g. 1.x → 2.0): breaking. Both apps must re-vendor and fix fallout
   before they can adopt — but they still do not *break* in the meantime, because they
   stay pinned to the old snapshot until someone re-vendors.
 
-Nothing in an app breaks when DAD-Main ships a new contract. The apps only change
-when a human re-vendors. The wall is a feature, not friction.
+The snapshot protects client builds from moving source contracts; it does not
+negotiate the server response format. Strict generated response decoders can reject
+new properties even when a schema change is additive. Verify runtime compatibility
+separately before deploying a backend revision.
 
-Release 2.11.0 is additive over the prior tag — it adds the native application receipt
-flow. An app that is still pinned to an earlier release keeps building and does not see
-the new operations until it re-vendors.
+An app pinned to an earlier release keeps building and does not see new operations
+until it re-vendors. Installed builds are a separate matter: iOS builds from the
+2.12.0 snapshot reject the response properties 2.13.0 added (employee verification
+flags and saved time-zone corrections), so the native and backend releases ship
+together. If older installed builds must coexist, the API owner must introduce and
+verify an explicit compatible response boundary first; changing a snapshot tag alone is
+insufficient.
 
 ## Re-vendoring an app (the per-phase chore)
 

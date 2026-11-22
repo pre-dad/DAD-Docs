@@ -103,9 +103,9 @@ login's Secrets Manager secret. The URL form is kept because it carries
 `default_query_exec_mode=exec`, which the RDS Proxy needs. DAD-Main accepts both forms, and
 a full URL that already contains a password still wins.
 
-**Deploy order.** DAD-Main commit `7506cbf` (which reads `_DATABASE_PASSWORD`) is deployed
-before DAD-infra commit `5c952e2` (which switches the task definitions to the password-less
-form). The other order leaves the processes unable to find a password. Rolling either side
+**Deploy order.** A password-less task definition needs a DAD-Main build that reads
+`_DATABASE_PASSWORD`, so DAD-Main is deployed first. The other order leaves the processes
+unable to find a password. Rolling either side
 back is safe while the other still supports the form in use. Rotating a password changes
 the secret value only; restart the service, no template redeploy. Authoritative sources:
 `DAD-Main/docs/operations.md` ("Supplying a password as a secret") and

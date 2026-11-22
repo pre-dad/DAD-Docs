@@ -40,21 +40,33 @@ const slug = (heading) =>
     .trim()
     .replace(/ /g, "-");
 
+const FENCE = /^ {0,3}(`{3,}|~{3,})/;
+
+// Calls visit(line) for each line outside a fenced code block.
+function outsideFences(src, visit) {
+  let fence = null;
+  for (const line of src.split("\n")) {
+    const m = line.match(FENCE);
+    if (fence) {
+      if (m && m[1][0] === fence[0] && m[1].length >= fence.length && line.trim() === m[1]) fence = null;
+    } else if (m) fence = m[1];
+    else visit(line);
+  }
+}
+
 const anchors = new Map();
 function anchorsOf(file) {
   if (!anchors.has(file)) {
     const seen = new Map();
     const set = new Set();
-    let fenced = false;
-    for (const line of readFileSync(file, "utf8").split("\n")) {
-      if (line.startsWith("```")) fenced = !fenced;
-      const m = !fenced && line.match(/^#{1,6}\s+(.*?)\s*#*$/);
-      if (!m) continue;
+    outsideFences(readFileSync(file, "utf8"), (line) => {
+      const m = line.match(/^#{1,6}\s+(.*?)\s*#*$/);
+      if (!m) return;
       const base = slug(m[1]);
       const n = seen.get(base) ?? 0;
       seen.set(base, n + 1);
       set.add(n === 0 ? base : `${base}-${n}`);
-    }
+    });
     anchors.set(file, set);
   }
   return anchors.get(file);
@@ -67,8 +79,9 @@ let broken = 0;
 let checked = 0;
 
 for (const file of walk(ROOT)) {
-  const src = readFileSync(file, "utf8");
-  for (const m of src.matchAll(LINK)) {
+  const lines = [];
+  outsideFences(readFileSync(file, "utf8"), (line) => lines.push(line.replace(/`[^`]*`/g, "")));
+  for (const m of lines.join("\n").matchAll(LINK)) {
     const target = m[1];
     // Skip external schemes and pure in-page anchors.
     if (/^(https?:|mailto:|tel:)/.test(target)) continue;

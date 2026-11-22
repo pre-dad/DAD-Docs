@@ -31,4 +31,4 @@ DAD-Android.** The owner chose this on 18 October 2026, deliberately overriding 
 
 | Premise | Owner | Consumer | Enforced |
 |---|---|---|---|
-| Both apps implement the same product rules against the same pinned contract. | R1 PRD (DAD-Main `docs/requirements/R1-PRD.md`) and the vendored contract | DAD-iOS, DAD-Android | `check-foundation` for the contract; each app's unit tests for the rules. Nothing compares the two apps' behavior directly. |
+| Both apps implement the same product rules against the same pinned contract. | R1 PRD (held outside the repos; §10 is quoted above) and the vendored contract | DAD-iOS, DAD-Android | `check-foundation` for the contract; each app's unit tests for the rules. Nothing compares the two apps' behavior directly. |

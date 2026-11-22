@@ -77,8 +77,17 @@ DAD-Main/
   contracts/         # mobile-foundation bundle source + version.json
   deploy/nginx/      # edge image: ingress, TLS and Cloudflare origin config
   scripts/           # bundle tooling, ECS rollout and one-off task scripts
-  infra/             # pointer to DAD-infra; no code
+  design/            # design tokens
   docs/              # architecture, operations, security, product contract
 ```
 
 Repo-local build/test commands for each live in `DAD-Main/README.md` — not here.
+
+## Native requests at runtime
+
+The native apps call a dedicated HTTPS API hostname; browser links use the separate
+public web origin. Main's nginx forwards only native-admitted contract operations
+to private `api:8002`. DAD-infra owns the service connection, security groups and
+edge rule definitions. The deployment owner activates DNS, certificates and edge
+policy before switching app configuration. See
+[ADR 0010](../decisions/0010-native-api-ingress.md) for the boundary and ownership.

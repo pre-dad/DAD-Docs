@@ -18,7 +18,7 @@ with these; this file only adds what they do not say.
 ```sh
 node scripts/check-links.mjs .
 node scripts/check-agent-skills.mjs
-node --test scripts/setup-agent-skills.test.mjs
+node --test scripts/setup-agent-skills.test.mjs scripts/check-links.test.mjs
 node --test agent-skills/dad-security-audit/references/cloudflare-security-audit/validate-findings.test.cjs agent-skills/dad-security-audit/references/cloudflare-security-audit/validate-coverage-ledger.test.cjs
 node scripts/check-version-anchor.mjs architecture/mobile-contract.md   # advisory, never fails
 ```
@@ -52,8 +52,8 @@ after installing into that repository. It starts no model turn and is not a CI d
 - **Never track working documents** (plans, status, findings, session notes). There is no
   `.gitignore` here, so `git add -A` would stage them: stage files by name. Keep them
   outside the tree or in the owning issue/PR.
-- **ADRs are one file per decision**, `decisions/NNNN-slug.md` (next free number, currently
-  0010), headed `# NNNN — Title` with `Status`, `Date`, `Scope` lines, then Context and
+- **ADRs are one file per decision**, `decisions/NNNN-slug.md` (next free number in
+  `decisions/README.md`), headed `# NNNN — Title` with `Status`, `Date`, `Scope` lines, then Context and
   Decision. Add each new one to the "Recorded decisions" list in `decisions/README.md`.
 - **Change a decision by superseding it**, as 0007 does for 0001: new ADR with
   `Supersedes:`, old one marked `Status: superseded by …` and kept as history.
