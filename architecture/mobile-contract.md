@@ -81,6 +81,21 @@ When an app needs operations from a newer contract:
 Re-vendoring is done **independently per app, on each app's own schedule.** Re-vendor
 at phase boundaries so drift does not pile up.
 
+## Invitation handoff across installation
+
+The iOS install handoff uses the existing 3.0 native attribution operations. A visitor
+explicitly copies the canonical referral or company-code link on DAD-Main's landing
+page, installs DAD, then pastes it under “Have an invitation?” before signup. The iOS
+link policy validates the configured HTTPS origin and supported invitation paths;
+sign-in proofs and foreign links are refused by this entry point. A successful capture
+keeps the server-issued token in the existing attribution store, including the IRL
+marker's classification. Clipboard contents are never read automatically.
+
+Submitting the pasted invitation records a new visit under the existing attribution
+window; it does not recover the browser's original touch time. Android retains its
+Play Install Referrer integration. Neither mechanism substitutes for clean-install
+acceptance on the corresponding store build and device.
+
 ## Drift check
 
 Both apps run an advisory **drift check** in their contract CI job: it compares the
