@@ -24,3 +24,4 @@ and enforce it in CI only where CI can re-derive it.
 - [0008 — CI runs on GitHub-hosted runners only](0008-github-hosted-runners-only.md)
 - [0009 — Separate native apps, not a shared cross-platform code base](0009-separate-native-apps.md)
 - [0010 — A distinct native API ingress](0010-native-api-ingress.md)
+- [0011 — A constrained UI catalog for generated donor screens](0011-constrained-ui-catalog.md)
