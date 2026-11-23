@@ -17,8 +17,8 @@ fit evaluation of 2026-11-21 found all four repos a conditional fit, with three 
 3. **Parity and version skew.** Under [0009](0009-separate-native-apps.md) each app renders
    the spec itself, so every catalog change needs a contract release and matching renderers.
 
-This decision fixes the contract for a pilot. Renderers, the staff approval flow and the
-AI authoring step are separate work and are not decided here.
+This decision fixes the contract for a pilot. Web and native renderers and a two-person
+staff approval flow implement it. Automated AI authoring remains outside the implementation.
 
 ## Decision
 
@@ -76,13 +76,15 @@ express them and a bind cannot reach them.
 | --- | --- | --- | --- |
 | Every bind in the catalog and vectors resolves in the `DonorDashboard` schema, and every navigate target is in `links.json`. | DAD-Main | Web, iOS and Android renderers | `node scripts/ui-catalog.mjs check` in `make check-mobile`, run by Main's CI; renaming a bound field fails it. |
 | The catalog and vectors are in the bundle manifest. | DAD-Main | DAD-iOS, DAD-Android | Bundle digests and each app's `check-foundation` file list, updated at re-vendor. |
-| A renderer treats unknown types as empty and rejects what the validator rejects. | Each app | Donors | Each renderer's tests over the shared vectors. Not yet enforced; renderers do not exist. |
-| Staff approve a spec before display. | Staff tooling (not built) | Donors | Not enforced. No spec may be shown to donors until it is. |
+| Unknown types render nothing; displayed layouts pass the catalog rules. | DAD-Main validator and each app | Donors | Main validates on save, submission, approval and dashboard read; native validators use the shared vectors, and renderer tests cover fallback behavior. |
+| A different staff publisher approves a spec before display. | DAD-Main staff tooling | Donors | The store and database constraint refuse self-approval; the dashboard serves only the live layout while `DONOR_INSIGHTS_ENABLED` is enabled. |
 
 ## Consequences
 
-- The next mobile-foundation release (DAD-Main #169) carries the catalog. The apps add the
-  two files to their `check-foundation.mjs` file lists when they re-vendor.
+- Mobile-foundation 3.0.0 carries the catalog and vectors. Both native apps pin that
+  release and verify the two files through `check-foundation.mjs`.
+- The shipped catalog permits only `account_paths`, a subset of the paths this decision
+  allows; notification-only paths are excluded.
 - A new component, prop, format or caption is a catalog change with a version bump,
   vectors, and a renderer in every app.
 - Catalog captions and link labels are fixed English strings shipped in the contract.
