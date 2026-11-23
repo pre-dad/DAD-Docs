@@ -24,17 +24,17 @@ operation allow-list and shipped as a tagged release of DAD-Main:
 ## How the apps pin it
 
 Each app commits a `foundation.lock.json` that pins the exact snapshot. As of this
-writing the current release is `2.13.0`, and the apps vendor it as this triple:
+writing the current release is `3.0.0`, and the apps vendor it as this triple:
 
-<!-- contract-version: 2.13.0 -->
+<!-- contract-version: 3.0.0 -->
 
 ```json
 {
-  "version": "2.13.0",
+  "version": "3.0.0",
   "source_repository": "pre-dad/DAD-Main",
-  "source_revision": "8d1bd0d46f996e6b8beab26f613f154ae105a036",
-  "release_tag": "mobile-foundation-v2.13.0",
-  "manifest_sha256": "23e3e679c5c60255e900c170c7d5d3285867fea0cbcc02bb033fbf0bbd0587f4"
+  "source_revision": "93437ed6cbad220cca2195898373956e589773fd",
+  "release_tag": "mobile-foundation-v3.0.0",
+  "manifest_sha256": "42ae04cb4105bf724a1aed2734a257ccf9cd49566d27e2cb94a2f95e4b22c229"
 }
 ```
 
@@ -58,10 +58,11 @@ new properties even when a schema change is additive. Verify runtime compatibili
 separately before deploying a backend revision.
 
 An app pinned to an earlier release keeps building and does not see new operations
-until it re-vendors. Installed builds are a separate matter: iOS builds from the
-2.12.0 snapshot reject the response properties 2.13.0 added (employee verification
-flags and saved time-zone corrections), so the native and backend releases ship
-together. If older installed builds must coexist, the API owner must introduce and
+until it re-vendors. Installed builds are a separate matter: strict generated decoders
+reject response properties a later snapshot adds (iOS builds from 2.12.0 reject the
+employee verification flags and saved time-zone corrections 2.13.0 added, and 3.0.0
+makes partner users' `accepted` field required), so the native and backend releases
+ship together. If older installed builds must coexist, the API owner must introduce and
 verify an explicit compatible response boundary first; changing a snapshot tag alone is
 insufficient.
 
@@ -79,6 +80,21 @@ When an app needs operations from a newer contract:
 
 Re-vendoring is done **independently per app, on each app's own schedule.** Re-vendor
 at phase boundaries so drift does not pile up.
+
+## Invitation handoff across installation
+
+The iOS install handoff uses the existing 3.0 native attribution operations. A visitor
+explicitly copies the canonical referral or company-code link on DAD-Main's landing
+page, installs DAD, then pastes it under “Have an invitation?” before signup. The iOS
+link policy validates the configured HTTPS origin and supported invitation paths;
+sign-in proofs and foreign links are refused by this entry point. A successful capture
+keeps the server-issued token in the existing attribution store, including the IRL
+marker's classification. Clipboard contents are never read automatically.
+
+Submitting the pasted invitation records a new visit under the existing attribution
+window; it does not recover the browser's original touch time. Android retains its
+Play Install Referrer integration. Neither mechanism substitutes for clean-install
+acceptance on the corresponding store build and device.
 
 ## Drift check
 
